@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MQTTnetXamarinPrototyp.Views.BinLinkingSynchronizationPage"
+             xmlns:vm="clr-namespace:MQTTnetXamarinPrototyp.ViewModels"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:converter="clr-namespace:MQTTnetXamarinPrototyp.Converter"
+             x:Name="BinLinkingSynchronization"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:BinLinkingSyncViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <xct:ItemSelectedEventArgsConverter x:Key="ItemSelectedEventArgsConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <Label Text="{Binding ConnectionStatus}"/>
+
+            <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                <CheckBox IsChecked="{Binding IsCheckedAll}"/>
+                <Label Margin="0,5,0,0" Text="Select All" />
+            </StackLayout>
+
+            <CollectionView ItemsSource="{Binding StorageLocations}" >
+                <CollectionView.ItemTemplate >
+                    <DataTemplate >
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
+                            <CheckBox IsChecked="{Binding IsChecked}"/>
+                            <Label Margin="0,5,0,0" Text="{Binding Name}" />
+                            <RadioButton GroupName="SubscribeSelection" IsChecked="{Binding GetStorage, Converter={converter:StorageLocationSelectionToBoolConverter}, 
+                                ConverterParameter={x:Static vm:BinLinkingSyncViewModel.SelectedTopicToPublish}}">
+                                <RadioButton.Behaviors>
+                                    <xct:EventToCommandBehavior
+                                        EventName="CheckedChanged"
+                                        Command="{Binding Source={x:Reference BinLinkingSynchronization}, Path=BindingContext.SelectTopicToPublish}"
+                                        CommandParameter="{Binding .}"/>
+                                </RadioButton.Behaviors>
+                            </RadioButton>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button Margin="0,10,0,0" Text="Connect"
+                        Command="{Binding ConnectBrokerCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+
+                <Button Margin="0,10,0,0" Text="Disconnect"
+                        Command="{Binding DisconnectBrokerCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

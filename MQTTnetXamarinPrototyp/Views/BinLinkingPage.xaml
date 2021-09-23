@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MQTTnetXamarinPrototyp.Views.BinLinkingPage"
+             xmlns:vm="clr-namespace:MQTTnetXamarinPrototyp.ViewModels"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:BinLinkingViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sync"
+                     Command="{Binding NavigateToBinLinkSync}"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <CollectionView ItemsSource="{Binding BinLinkingDTOs}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="Delete" BackgroundColor="Red" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BinLinkingViewModel}}, Path=RemoveBinLinking}" CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding ProductBarcode}"/>
+                                <Label Text="{Binding KLTBarcode}"/>
+                            </StackLayout>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="Synchronized Bins" />
+
+            <CollectionView ItemsSource="{Binding SynchronizedBinLinkingDTOs}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding ClientID}"/>
+                            <Label Text="{Binding ProductBarcode}"/>
+                            <Label Text="{Binding KLTBarcode}"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Add random" Command="{Binding AddRandomLinking}"/>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
